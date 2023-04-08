@@ -7,6 +7,10 @@ services:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - "9090:9090"
+    depends_on:
+      - blackbox
+    networks:
+      - monitoring
       
   grafana:
     image: grafana/grafana
@@ -17,6 +21,10 @@ services:
       - ./grafana.ini:/etc/grafana/grafana.ini
     ports:
       - "3000:3000"
+    depends_on:
+      - prometheus
+    networks:
+      - monitoring
       
   alertmanager:
     image: bitnami/alertmanager
@@ -24,6 +32,10 @@ services:
       - ./alertmanager.yml:/etc/alertmanager/config.yml
     ports:
       - "9093:9093"
+    depends_on:
+      - prometheus
+    networks:
+      - monitoring
       
   blackbox:
     image: bitnami/blackbox-exporter
@@ -31,3 +43,8 @@ services:
       - ./blackbox.yml:/etc/blackbox-exporter/config.yml
     ports:
       - "9115:9115"
+    networks:
+      - monitoring
+
+networks:
+  monitoring:
